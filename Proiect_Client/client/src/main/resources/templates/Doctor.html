@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Page</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
+
+    <style>
+
+        .header {
+            padding:2px;
+            background: rgb(0, 102, 102);
+            color:  rgb(230, 255, 255);
+            font-family: "Georgia", serif;
+            font-size: 14px;
+        }
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            padding:1px;
+            background: rgb(0, 102, 102);
+            color:  rgb(230, 255, 255);
+            font-family: "Georgia", serif;
+            font-size: 13px;
+        }
+        body{
+            background-image: url("https://wallpaperaccess.com/full/1282794.jpg");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+        }
+        .center {
+            text-align: center;
+            color: rgb(0, 25, 51);
+            font-family: "Georgia", serif;
+            font-size: 200%;
+        }
+        form{
+            width: 500px;
+            margin: 0 auto;
+        }
+        input[type=text] {
+            width: 100%;
+            padding: 3px 4px;
+            margin:1px 0;
+            box-sizing: border-box;
+        }
+        input[type=button], input[type=submit], input[type=reset] {
+            background-color: rgb(0, 102, 102);
+            border: solid darkslategrey;
+            font-family: "Georgia", serif;
+            font-weight: bold;
+            color: rgb(230, 242, 255);
+            padding: 7px 50px;
+            text-decoration: none;
+            margin: 2px 2px;
+            cursor: pointer;
+            allign: center;
+            width: 48%;
+        }
+
+        .form_class {
+            text-align: center;
+            color: rgb(0, 25, 51);
+            font-family: "Georgia", serif;
+            font-weight: bold;
+            font-size: 80%;
+        }
+
+        .div_class {
+            background-color:rgb(234, 250, 250);
+            width: 600px;
+            padding:3px;
+            border:3px solid darkslategrey;
+            margin: 0 auto;
+        }
+
+        .select-items {
+            font-family: "Georgia", serif;
+            border: solid darkslategrey;
+            background-color: rgb(0, 102, 102);
+            color: rgb(230, 242, 255);
+            padding:5px 10px;
+            margin: 1px 2px;
+            width: 100%;
+
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="header">
+    <table style="width:100%">
+        <tr>
+            <th><img src="https://cdn2.vectorstock.com/i/1000x1000/36/06/medical-health-hospital-logo-icon-vector-27693606.jpg" width="60" height="60"></th>
+            <th style="text-align: left;"> <h1>Spitalul Medclin</h1></th>
+            <th style="text-align: right;"><small>E-mail: medclin_hospital@ehealth.com</small></th>
+        </tr>
+    </table>
+</div>
+
+<h1 class = "center">PAGINA DOCTOR</h1>
+<p th:if="${doctorrerror}" class="error">Something went wrong</p>
+<div class = "div_class">
+    <form th:action="@{/doctor/finalizareConsultatie}" method="post" modelattribute="doctor">
+        <input type="hidden" th:field="*{doctor.id}">
+
+        <script>
+            $(document).ready(function(){
+                $('#Consultatii').on('change',function(){
+
+                    if($(this).find(":selected").text() != "Selectati Consultatia Dorita"){
+                        var s1 = $(this).find(":selected").data('diag');
+                        var s2 = $(this).find(":selected").data('ret');
+                        var s3 = $(this).find(":selected").data('temp');
+                        var s4 = $(this).find(":selected").data('ten');
+                        var s5 = $(this).find(":selected").data('simp');
+                        var s6 = $(this).find(":selected").data('ante');
+                        var s7 = $(this).find(":selected").data('here');
+                        $('#diagnostic').val(s1);
+                        $('#reteta').val(s2);
+                        $('#temperatura').val(s3);
+                        $('#tensiune').val(s4);
+                        $('#simptome').val(s5);
+                        $('#antecedente').val(s6);
+                        $('#heredocolaterale').val(s7);
+                    }else{
+                        $('#diagnostic').val("");
+                        $('#reteta').val("");
+                        $('#temperatura').val("");
+                        $('#tensiune').val("");
+                        $('#simptome').val("");
+                        $('#antecedente').val("");
+                        $('#heredocolaterale').val("");
+                    }
+                });
+            })
+        </script>
+
+        <select id="Consultatii" name="consultatii" class = "select-items" th:object="${ConsultatiaActuala}" th:field="*{doctor.id}">
+            <option value="0">Selectati Consultatia Dorita</option>
+            <option th:each="consul : ${ConsultatiiActuale}" th:value="${consul.id}"
+                    th:text="'Consultatia din data ' + ${consul.data} + ' a pacientului ' + ${consul.pacient.firstname} + ' ' + ${consul.pacient.lastname}"
+                    th:attr="data-diag=${consul.diagnostic}, data-ret=${consul.reteta}, data-temp=${consul.temperatura}, data-ten=${consul.tensiunea}, data-simp=${consul.simptome},
+                            data-ante=${consul.antecedente}, data-here=${consul.heredocolaterale}">
+            </option>
+        </select> <br/>
+
+        <label for="temperatura" class = "form_class">Temperatura</label>:
+        <input type="text" id="temperatura" autofocus="autofocus" readonly> <br />
+        <label for="tensiune" class = "form_class">Tensiunea</label>:
+        <input type="text" id="tensiune" autofocus="autofocus" readonly> <br />
+        <label for="simptome" class = "form_class">Simptome</label>:
+        <input type="text" id="simptome" autofocus="autofocus" readonly> <br />
+        <label for="antecedente" class = "form_class">Antecedente</label>:
+        <input type="text" id="antecedente" autofocus="autofocus" readonly> <br />
+        <label for="heredocolaterale" class = "form_class">Heredocolaterale</label>:
+        <input type="text" id="heredocolaterale" autofocus="autofocus" readonly> <br />
+
+        <label for="diagnostic" class = "form_class">Diagnostic</label>:
+        <input type="text" id="diagnostic" rows="3" style="height:60px;" th:field="*{ConsultatiaActuala.diagnostic}" autofocus="autofocus"> <br />
+        <label for="reteta" class = "form_class">Reteta</label>:
+        <input type="text" id="reteta" rows="3" style="height:60px;" th:field="*{ConsultatiaActuala.reteta}" autofocus="autofocus"> <br />
+        <input type="submit" value="Finalizati Consultatia">
+
+        <a href="http://localhost:8082/login">
+            <input type="button" value="LogOut" />
+        </a>
+    </form>
+</div>
+
+
+<div class="footer">
+    <table style="width:100%">
+        <p>Numar de telefon: 0724678153</p>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Page</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
+    <style>
+        .header {
+            padding:5px;
+            background: rgb(0, 102, 102);
+            color:  rgb(230, 255, 255);
+            font-family: "Georgia", serif;
+            font-size: 20px;
+        }
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            padding:5px;
+            background: rgb(0, 102, 102);
+            color:  rgb(230, 255, 255);
+            font-family: "Georgia", serif;
+            font-size: 15px;
+        }
+        .center {
+            text-align: center;
+            color: rgb(0, 25, 51);
+            font-family: "Georgia", serif;
+            font-size: 250%;
+        }
+        body{
+
+            background-image: url("https://wallpaperaccess.com/full/1282794.jpg");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+        }
+
+        .form_class {
+            text-align: center;
+            color: rgb(0, 25, 51);
+            font-family: "Georgia", serif;
+            font-weight: bold;
+            font-size: 100%;
+        }
+        form{
+            width: 500px;
+            margin: 0 auto;
+        }
+
+        input[type=text],[type=password], [type=firstname], [type=lastname] {
+            width: 100%;
+            padding: 10px 10px;
+            margin: 4px 0;
+            box-sizing: border-box;
+        }
+
+        input[type=button], input[type=submit], input[type=reset] {
+            background-color: rgb(0, 102, 102);
+            border: solid darkslategrey;
+            font-family: "Georgia", serif;
+            font-weight: bold;
+            color: rgb(230, 242, 255);
+            padding: 15px 25px;
+            text-decoration: none;
+            margin: 2px 2px;
+            cursor: pointer;
+            allign: center;
+        }
+
+        .select-items {
+            font-family: "Georgia", serif;
+            border: solid darkslategrey;
+            background-color: rgb(0, 102, 102);
+            color: rgb(230, 242, 255);
+            padding: 15px 10px;
+            margin: 1px 1px;
+
+        }
+
+        .div_class {
+            background-color:rgb(234, 250, 250);
+            width: 600px;
+            padding: 10px;
+            border: 5px solid darkslategrey;
+            margin: 0 auto;
+        }
+
+        .custom-select select {
+            display: none; /*hide original SELECT element:*/
+        }
+
+    </style>
+</head>
+<body>
+<div class="header">
+    <table style="width:100%">
+        <tr>
+            <th><img src="https://cdn2.vectorstock.com/i/1000x1000/36/06/medical-health-hospital-logo-icon-vector-27693606.jpg" width="60" height="60"></th>
+            <th style="text-align: left;"> <h1>Spitalul Medclin</h1></th>
+            <th style="text-align: right;"><small>E-mail: medclin_hospital@ehealth.com</small></th>
+        </tr>
+    </table>
+</div>
+
+<h1 class = "center">Register Page</h1>
+<p th:if="${registererror}" class="error">Username already exists</p>
+<div class = "div_class">
+    <form th:action="@{/registerUser}" method="post" th:object="${User}">
+        <label for="username" class = "form_class">Username</label>:
+        <input type="text" id="username" name="username" th:field="*{username}" required autofocus="autofocus"/> <br />
+        <label for="password" class = "form_class">Password</label>:
+        <input type="password" id="password" name="password" th:field="*{password}" required autofocus="autofocus"/> <br />
+        <label for="firstname" class = "form_class">First Name</label>:
+        <input type="firstname" id="firstname" name="firstname" th:field="*{firstname}" required autofocus="autofocus"/> <br />
+        <label for="lastname" class = "form_class">Last Name</label>:
+        <input type="lastname" id="lastname" name="lastname" th:field="*{lastname}" required autofocus="autofocus"/> <br />
+
+        <script>
+            var doctorii;
+
+            $(document).ready(function(){
+                copy('TheDoctors');
+            });
+
+            function copy(s2){
+                var s2 = document.getElementById(s2);
+
+                doctorii = s2.innerHTML;
+                s2.innerHTML = "";
+                var newOption = document.createElement("option");
+                newOption.value = "0";
+                newOption.innerHTML = "Selectati Doctorul Responsabil";
+                s2.options.add(newOption);
+            }
+            function populate(s1, s2) {
+                var s1 = document.getElementById(s1);
+                var s2 = document.getElementById(s2);
+
+                s2.innerHTML = "";
+                if(s1.value == "doctor"){
+                    var optionArray = ["0|"];
+                    for(var option in optionArray){
+                        var pair = optionArray[option].split("|");
+                        var newOption = document.createElement("option");
+                        newOption.value = pair[0];
+                        newOption.innerHTML = pair[1];
+                        s2.options.add(newOption);
+                    }
+                }
+                else if (s1.value == "pacient"){
+                    var optionArray = ["|Selectati Doctorul Responsabil"];
+                    for(var option in optionArray){
+                        var pair = optionArray[option].split("|");
+                        var newOption = document.createElement("option");
+                        newOption.value = pair[0];
+                        newOption.innerHTML = pair[1];
+                        s2.options.add(newOption);
+                    }
+                    s2.innerHTML = s2.innerHTML + doctorii;
+                }
+                else if(s1.innerText.substring(0,18) == "Selectati-va Tipul"){
+                    var optionArray = ["|Selectati Doctorul Responsabil"];
+                    for(var option in optionArray){
+                        var pair = optionArray[option].split("|");
+                        var newOption = document.createElement("option");
+                        newOption.value = pair[0];
+                        newOption.innerHTML = pair[1];
+                        s2.options.add(newOption);
+                    }
+                }
+            }
+        </script>
+
+        <table style="width:100%">
+            <tr>
+                <th>
+                    <select id="Type" name="type" class = "select-items" onchange="populate(this.id,'TheDoctors')" th:field="*{type}" required>
+                        <option value="">Selectati-va Tipul</option>
+                        <option value="pacient">Pacient</option>
+                        <option value="doctor">Doctor</option>
+                    </select>
+                </th>
+                <th>
+                    <select id="TheDoctors" name="thedoctors" class = "select-items" th:object="${Doctor_id}" th:field="*{id}" required>
+                        <!--            <option value="">Selectati Doctorul Responsabil</option>-->
+                        <option th:each="doctor : ${Doctors}" th:value="${doctor.id}"
+                                th:text="${doctor.firstname}+' '+${doctor.lastname}"></option>
+                    </select>
+                </th>
+                <th>
+                    <input type="submit" value="Register"/>
+                </th>
+            </tr>
+        </table>
+    </form>
+</div>
+<div class="footer">
+    <table style="width:100%">
+        <p>Numar de telefon: 0724678153</p>
+    </table>
+</div>
+</body>
+</html>
